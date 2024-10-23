@@ -5,6 +5,7 @@ import com.venicios.shop_api.api.assembler.ShopModelAssembler;
 import com.venicios.shop_api.domain.dto.ShopDTO;
 import com.venicios.shop_api.domain.dto.input.ShopInput;
 import com.venicios.shop_api.domain.model.Shop;
+import com.venicios.shop_api.domain.model.ShopItem;
 import com.venicios.shop_api.domain.repository.ShopRepository;
 import com.venicios.shop_api.domain.service.ShopService;
 import jakarta.validation.Valid;
@@ -41,7 +42,16 @@ public class ShopController {
     @ResponseStatus(HttpStatus.CREATED)
     public ShopDTO adicionar(@RequestBody @Valid ShopInput shopInput) {
         Shop shop = shopInputDisassembler.toDomainObject(shopInput);
-        shop = shopService.salvar(shop);
+//        shop = shopService.salvar(shop); // Salve o Shop primeiro
+
+        // Agora, associe os itens da compra ao Shop
+        for (ShopItem shopItem : shop.getItems()) {
+            shopItem.setShop(shop); // Associe o Shop aos ShopItems
+        }
+
+        // Salve novamente para garantir que os ShopItems sejam persistidos
+        shop = shopService.salvar(shop); // Salve novamente o Shop com os itens associados
+
         return shopModelAssembler.toModel(shop);
     }
 
