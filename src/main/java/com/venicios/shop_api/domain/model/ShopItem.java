@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Entity
+@Entity(name = "shop_item")
 public class ShopItem {
 
     @EqualsAndHashCode.Include
